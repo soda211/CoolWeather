@@ -3,9 +3,13 @@ package soda.coolweather;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
+import android.util.Log;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import soda.coolweather.util.http.HttpCallBackListener;
+import soda.coolweather.util.http.HttpUtil;
 
 import static org.junit.Assert.*;
 
@@ -22,5 +26,20 @@ public class ExampleInstrumentedTest {
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         assertEquals("soda.coolweather", appContext.getPackageName());
+    }
+
+    @Test
+    public void logHttpResponse() throws Exception {
+        HttpUtil.sendHttpRequest("http://www.weather.com.cn/data/list3/city.xml", new HttpCallBackListener() {
+            @Override
+            public void onSuccess(String response) {
+                Log.e("fuck", response);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
     }
 }
