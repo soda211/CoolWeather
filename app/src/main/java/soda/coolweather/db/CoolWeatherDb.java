@@ -83,6 +83,7 @@ public class CoolWeatherDb {
         ContentValues contentValues = new ContentValues();
         contentValues.put("city_name", city.getCityName());
         contentValues.put("city_code", city.getCityCode());
+        contentValues.put("province_code", city.getProvinceCode());
         mDatabase.insert("City", null, contentValues);
     }
 
@@ -90,15 +91,16 @@ public class CoolWeatherDb {
      * 从数据库中读取城市列表
      * @return
      */
-    public List<City> loadCities(){
+    public List<City> loadCities(String provinceCode){
         List<City> cities = new ArrayList<>();
-        Cursor cursor = mDatabase.query("City", null, null, null, null, null, null);
+        Cursor cursor = mDatabase.query("City", null, "province_code = ?", new String[]{provinceCode}, null, null, null);
         if (cursor.moveToFirst()) {
             do {
                 City city = new City();
                 city.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 city.setCityName(cursor.getString(cursor.getColumnIndex("city_name")));
                 city.setCityCode(cursor.getString(cursor.getColumnIndex("city_code")));
+                city.setProvinceCode(provinceCode);
                 cities.add(city);
             } while (cursor.moveToNext());
         }
@@ -113,6 +115,7 @@ public class CoolWeatherDb {
         ContentValues contentValues = new ContentValues();
         contentValues.put("county_name", county.getCountyName());
         contentValues.put("county_code", county.getCountyCode());
+        contentValues.put("city_code", county.getCityCode());
         mDatabase.insert("County", null, contentValues);
     }
 
@@ -120,16 +123,17 @@ public class CoolWeatherDb {
      * 从数据库中读取省份列表
      * @return
      */
-    public List<County> loadCounties(){
+    public List<County> loadCounties(String cityCode){
         List<County> provinces = new ArrayList<>();
-        Cursor cursor = mDatabase.query("County", null, null, null, null, null, null);
+        Cursor cursor = mDatabase.query("County", null, "city_code = ?", new String[]{cityCode}, null, null, null);
         if (cursor.moveToFirst()) {
             do {
-                County province = new County();
-                province.setId(cursor.getInt(cursor.getColumnIndex("id")));
-                province.setCountyName(cursor.getString(cursor.getColumnIndex("county_name")));
-                province.setCountyCode(cursor.getString(cursor.getColumnIndex("county_code")));
-                provinces.add(province);
+                County county = new County();
+                county.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                county.setCountyName(cursor.getString(cursor.getColumnIndex("county_name")));
+                county.setCountyCode(cursor.getString(cursor.getColumnIndex("county_code")));
+                county.setCityCode(cityCode);
+                provinces.add(county);
             } while (cursor.moveToNext());
         }
         return provinces;
