@@ -30,7 +30,21 @@ public class ExampleInstrumentedTest {
 
     @Test
     public void logHttpResponse() throws Exception {
-        HttpUtil.sendHttpRequest("http://www.weather.com.cn/data/list3/city.xml", new HttpCallBackListener() {
+        HttpUtil.sendHttpRequest("http://www.weather.com.cn/data/list3/city190101.xml", new HttpCallBackListener() {
+            @Override
+            public void onSuccess(String response) {
+                Log.e("fuck", response);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+    @Test
+    public void logHttpResponse1() throws Exception {
+        HttpUtil.sendHttpRequest("http://www.weather.com.cn/data/cityinfo/101190404.html", new HttpCallBackListener() {
             @Override
             public void onSuccess(String response) {
                 Log.e("fuck", response);

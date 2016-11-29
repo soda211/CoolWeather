@@ -1,8 +1,11 @@
 package soda.coolweather.activity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -21,11 +24,12 @@ import soda.coolweather.db.CoolWeatherDb;
 import soda.coolweather.model.City;
 import soda.coolweather.model.County;
 import soda.coolweather.model.Province;
+import soda.coolweather.util.Constant;
 import soda.coolweather.util.Utility;
 import soda.coolweather.util.http.HttpCallBackListener;
 import soda.coolweather.util.http.HttpUtil;
 
-public class ChooseAreaActivity extends AppCompatActivity {
+public class ChooseAreaActivity extends Activity {
 
     public static final int LEVEL_PROVINCE = 0;
     public static final int LEVEL_CITY = 1;
@@ -56,6 +60,16 @@ public class ChooseAreaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.choose_area);
+        boolean from_weather_activity = getIntent().getBooleanExtra("from_weather_activity", false);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean aBoolean = preferences.getBoolean(Constant.CITY_SELECTED, false);
+        if (aBoolean && !from_weather_activity) {
+            //直接跳转到天气页面
+            Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
         //初始化控件
         mTvTitle = (TextView) findViewById(R.id.tv_title);
         mLvArea = (ListView) findViewById(R.id.lv_area);
@@ -73,6 +87,12 @@ public class ChooseAreaActivity extends AppCompatActivity {
                     //查询县级数据
                     mSelectedCity = mCityList.get(position);
                     queryCounties();
+                } else if (currentLevel == LEVEL_COUNTY) {
+                    County county = mCountyList.get(position);
+                    Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
+                    intent.putExtra("county_code", county.getCountyCode());
+                    startActivity(intent);
+                    finish();
                 }
             }
         });

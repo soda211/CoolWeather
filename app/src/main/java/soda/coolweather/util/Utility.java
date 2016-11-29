@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,20 +24,6 @@ import soda.coolweather.model.Province;
  */
 
 public class Utility {
-    //sharedPreferences用到的一些常量
-    interface SpConstant{
-        String CITY_SELECTED = "city_selected";
-        String CITY_NAME = "city_name";
-        String WEATHER_CODE = "weather_code";
-        String TEMP1 = "temp1";
-        String TEMP2 = "temp2";
-        String WEATHER_DES = "weather_des";
-        String PUBLISH_TIME = "publish_time";
-        String CURRENT_TIME = "current_time";
-    }
-
-
-
     /**
      * 解析处理 服务器返回的省级数据
      * @param response
@@ -122,7 +109,7 @@ public class Utility {
      * @param context
      * @param response
      */
-    public void handleWeatherResponse(Context context, String response){
+    public static void handleWeatherResponse(Context context, String response){
         try {
             JSONObject jsonObject = new JSONObject(response);
             JSONObject weatherinfo = jsonObject.getJSONObject("weatherinfo");
@@ -133,9 +120,9 @@ public class Utility {
             String weatherDes = weatherinfo.getString("weather");
             String publishTime = weatherinfo.getString("ptime");
             saveWeatherInfo(context, city, weatherCode, temp1, temp2, weatherDes, publishTime);
-
         } catch (JSONException e) {
             e.printStackTrace();
+            Log.e("server", "json parse error"+e.toString());
         }
 
     }
@@ -150,17 +137,17 @@ public class Utility {
      * @param weatherDes
      * @param publishTime
      */
-    private void saveWeatherInfo(Context context, String cityName, String weatherCode, String temp1, String temp2, String weatherDes, String publishTime) {
-        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy年mm月dd日", Locale.CHINA);
+    private static void saveWeatherInfo(Context context, String cityName, String weatherCode, String temp1, String temp2, String weatherDes, String publishTime) {
+        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy年M月d日", Locale.CHINA);
         SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        edit.putBoolean(SpConstant.CITY_SELECTED, true);
-        edit.putString(SpConstant.CITY_NAME, cityName);
-        edit.putString(SpConstant.WEATHER_CODE, weatherCode);
-        edit.putString(SpConstant.TEMP1, temp1);
-        edit.putString(SpConstant.TEMP1, temp2);
-        edit.putString(SpConstant.WEATHER_DES, weatherDes);
-        edit.putString(SpConstant.PUBLISH_TIME, publishTime);
-        edit.putString(SpConstant.CURRENT_TIME, simpleFormat.format(new Date()));
+        edit.putBoolean(Constant.CITY_SELECTED, true);
+        edit.putString(Constant.CITY_NAME, cityName);
+        edit.putString(Constant.WEATHER_CODE, weatherCode);
+        edit.putString(Constant.TEMP1, temp1);
+        edit.putString(Constant.TEMP2, temp2);
+        edit.putString(Constant.WEATHER_DES, weatherDes);
+        edit.putString(Constant.PUBLISH_TIME, publishTime);
+        edit.putString(Constant.CURRENT_TIME, simpleFormat.format(new Date()));
         edit.commit();
     }
 
