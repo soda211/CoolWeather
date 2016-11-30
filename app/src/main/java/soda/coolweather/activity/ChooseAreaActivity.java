@@ -2,6 +2,7 @@ package soda.coolweather.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import net.youmi.android.AdManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +63,8 @@ public class ChooseAreaActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.choose_area);
+        Context context = this;
+        AdManager.getInstance(context).init("85aa56a59eac8b3d", "a14006f66f58d5d7", false, true);
         boolean from_weather_activity = getIntent().getBooleanExtra("from_weather_activity", false);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean aBoolean = preferences.getBoolean(Constant.CITY_SELECTED, false);
